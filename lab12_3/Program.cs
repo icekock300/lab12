@@ -40,7 +40,18 @@ class Program
                         tree.ShowTree();
                         break;
                     case 5:
-                        
+                        if (tree == null)
+                        {
+                            Console.WriteLine("Дерево пусто. Сначала создайте дерево.");
+                            continue;
+                        }
+                        Console.Write("Введите ключ для удаления: ");
+                        MusicalInstrument key = new MusicalInstrument();
+                        key.Init();
+                        if (tree.Remove(key))
+                            Console.WriteLine($"Элемент с ключом {key} успешно удален.");
+                        else
+                            Console.WriteLine($"Элемент с ключом {key} не найден.");
                         break;
                     case 6:
                         tree.RemoveTree();

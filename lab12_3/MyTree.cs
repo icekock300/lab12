@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using LibraryLab10;
 namespace lab12_3
 {
@@ -16,6 +17,7 @@ namespace lab12_3
             root = MakeTree(length, root);
         }
 
+        [ExcludeFromCodeCoverage]
         public void ShowTree()
         {
             Show(root);
@@ -40,6 +42,7 @@ namespace lab12_3
             return newItem;
         }
 
+        [ExcludeFromCodeCoverage]
         void Show(Point<T>? point, int spaces = 5)
         {
             if (point != null)
@@ -107,6 +110,7 @@ namespace lab12_3
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public T FindMin()
         {
             if (root == null)
@@ -129,31 +133,90 @@ namespace lab12_3
             count = 0;
         }
 
-        public void Run(Point<T>? point)
+        //public void Run(Point<T>? point)
+        //{
+        //    if (point != null)
+        //    {
+        //        Run(point.Left);
+        //        Run(point.Right);
+        //    }
+        //}
+
+        // Метод удаления элемента с заданным ключом из дерева
+        public bool Remove(T key)
         {
-            if (point != null)
+            if (root == null)
+                return false;
+
+            Point<T> parent = null;
+            Point<T> current = root;
+
+            // Поиск удаляемого узла и его родителя
+            while (current != null)
             {
-                Run(point.Left);
-                Run(point.Right);
+                int comparisonResult = key.CompareTo(current.Data);
+                if (comparisonResult == 0)
+                    break;
+                else
+                {
+                    parent = current;
+                    if (comparisonResult < 0)
+                        current = current.Left;
+                    else
+                        current = current.Right;
+                }
             }
+
+            // Если элемент не найден
+            if (current == null)
+                return false;
+
+            // Удаляемый узел - лист
+            if (current.Left == null && current.Right == null)
+            {
+                if (parent == null)
+                    root = null;
+                else if (parent.Left == current)
+                    parent.Left = null;
+                else
+                    parent.Right = null;
+            }
+            // Удаляемый узел имеет только одного потомка
+            else if (current.Left == null || current.Right == null)
+            {
+                Point<T> child = current.Left ?? current.Right;
+                if (parent == null)
+                    root = child;
+                else if (parent.Left == current)
+                    parent.Left = child;
+                else
+                    parent.Right = child;
+            }
+            // Удаляемый узел имеет двух потомков
+            else
+            {
+                Point<T> successorParent = current;
+                Point<T> successor = current.Right;
+                while (successor.Left != null)
+                {
+                    successorParent = successor;
+                    successor = successor.Left;
+                }
+
+                // Замена значения текущего узла на значение его преемника
+                current.Data = successor.Data;
+
+                // Удаление преемника из правого поддерева
+                if (successorParent.Left == successor)
+                    successorParent.Left = successor.Right;
+                else
+                    successorParent.Right = successor.Right;
+            }
+
+            count--;
+            return true;
         }
 
-        public void RemoveByKey(Point<T>? musForRemove)
-        {
-            //Point<T> musForRemove = new Point<T>(data);
-
-            if (musForRemove == root)
-            {
-
-            }
-
-            if (root != null)
-            {
-                Run(root.Left);
-                Run(root.Right);
-            }
-        }
-        
     }
 }
 

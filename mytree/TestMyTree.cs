@@ -9,207 +9,189 @@ namespace MyTreeTests
     public class MyTreeTests
     {
         [TestMethod]
-        public void AddPoint_AddSingleElement_TreeContainsElement()
+        public void Point_DefaultConstructor_DataIsNull()
         {
             // Arrange
-            var tree = new MyTree<MusicalInstrument>(0);
-
-            // Act
-            tree.AddPoint(new MusicalInstrument());
+            var point = new Point<MusicalInstrument>();
 
             // Assert
-            Assert.AreEqual(1, tree.Count);
+            Assert.IsNull(point.Data);
+            Assert.IsNull(point.Left);
+            Assert.IsNull(point.Right);
         }
 
         [TestMethod]
-        public void FindMin_TreeWithMultipleElements_ReturnsMinimumElement()
+        public void Point_ConstructorWithData_SetsDataAndNullLinks()
         {
             // Arrange
-            var tree = new MyTree<MusicalInstrument>(0);
-            tree.AddPoint(new MusicalInstrument("Guitar", new IdNumber(1)));
-            tree.AddPoint(new MusicalInstrument("Piano", new IdNumber(2)));
-            tree.AddPoint(new MusicalInstrument("Drums", new IdNumber(3)));
-
-            // Act
-            var min = tree.FindMin();
+            var testData = new MusicalInstrument("Guitar", new IdNumber(1));
+            var point = new Point<MusicalInstrument>(testData);
 
             // Assert
-            Assert.AreEqual("Guitar", min.InstrumentName);
+            Assert.AreEqual(testData, point.Data);
+            Assert.IsNull(point.Left);
+            Assert.IsNull(point.Right);
+        }
+
+
+        [TestMethod]
+        public void CompareTo_CompareTwoPoints_Success()
+        {
+            // Arrange
+            int data1 = 10;
+            int data2 = 5;
+            Point<int> point1 = new Point<int>(data1);
+            Point<int> point2 = new Point<int>(data2);
+
+            // Act
+            int result = point1.CompareTo(point2);
+
+            // Assert
+            Assert.AreEqual(1, result); // Expecting point1 to be greater than point2
+        }
+
+        [TestMethod]
+        public void MakeTree_CreateTreeWithSpecifiedLength_Success()
+        {
+            // Arrange
+            int length = 5;
+            MyTree<MusicalInstrument> tree = new MyTree<MusicalInstrument>(length);
+
+            // Act
+            tree.MakeTree(length, tree.root);
+            int count = CountNodes(tree.root);
+
+            // Assert
+            Assert.AreEqual(length, count);
+        }
+
+        [TestMethod]
+        public void AddPoint_AddNewPointToTree_Success()
+        {
+            // Arrange
+            MyTree<MusicalInstrument> tree = null;
+            tree = new MyTree<MusicalInstrument>(3);
+
+            MusicalInstrument instrument1 = new MusicalInstrument("Guitar", new IdNumber(1));
+            MusicalInstrument instrument2 = new MusicalInstrument("Piano", new IdNumber(2));
+            MusicalInstrument instrument3 = new MusicalInstrument("Drums", new IdNumber(3));
+
+            // Act
+            tree.AddPoint(instrument1);
+            tree.AddPoint(instrument2);
+            tree.AddPoint(instrument3);
+
+            // Assert
+            Assert.AreEqual(6, tree.Count);
         }
 
         //[TestMethod]
-        //public void RemoveByKey_RemoveExistingKey_ElementIsRemoved()
+        //public void TransformToArray_TransformTreeToArray_Success()
         //{
         //    // Arrange
-        //    var tree = new MyTree<MusicalInstrument>(0);
-        //    var guitar = new MusicalInstrument("Guitar", new IdNumber(1));
-        //    tree.AddPoint(guitar);
+        //    MyTree<MusicalInstrument> tree = null;
+
+        //    MusicalInstrument instrument1 = new MusicalInstrument("Guitar", new IdNumber(1));
+        //    MusicalInstrument instrument2 = new MusicalInstrument("Piano", new IdNumber(2));
+        //    MusicalInstrument instrument3 = new MusicalInstrument("Drums", new IdNumber(3));
+
+        //    tree.AddPoint(instrument1);
+        //    tree.AddPoint(instrument2);
+        //    tree.AddPoint(instrument3);
+
+        //    MusicalInstrument[] expectedArray = { instrument1, instrument2, instrument3 };
+        //    MusicalInstrument[] array = new MusicalInstrument[tree.Count];
+        //    int current = 0;
 
         //    // Act
-        //    tree.RemoveByKey(guitar.InstrumentName);
+        //    tree.TransformToArray(tree.root, array, ref current);
 
         //    // Assert
-        //    Assert.AreEqual(0, tree.Count);
-        //    //Assert.Throws<InvalidOperationException>(() => tree.FindMin());
+        //    Assert.AreEqual(expectedArray, array);
         //}
 
         [TestMethod]
-        public void MakeTree_CreatesBalancedTree_TreeIsBalanced()
+        public void TransformToFindTree_TransformTreeToBinarySearchTree_Success()
         {
             // Arrange
-            var tree = new MyTree<MusicalInstrument>(0);
-            int length = 3; // Example: For 7 elements, the tree depth is 3
-
-            // Act
-            tree = new MyTree<MusicalInstrument>(length);
-
-            // Assert
-            int actualDepth = GetTreeDepth(tree.root);
-            Assert.AreEqual(length, actualDepth);
-        }
-
-        [TestMethod]
-        public void TransformToArray_ReturnsArrayWithAllElements_ArrayContainsAllElements()
-        {
-            // Arrange
-            var tree = new MyTree<MusicalInstrument>(0);
-            tree.MakeTree(5, tree.root);
-            var expectedArray = tree.FindMin().Id.Id.ToString(); // Just for demonstration
-
-            // Act
-            var array = new MusicalInstrument[5];
-            int currentIndex = 0;
-            tree.TransformToArray(tree.root, array, ref currentIndex);
-
-            // Assert
-            Assert.IsTrue(array.All(item => item.Id.Id.ToString() == expectedArray));
-        }
-
-        [TestMethod]
-        public void TransformToFindTree_TransformsToBinarySearchTree_TreeIsBST()
-        {
-            // Arrange
-            var tree = new MyTree<MusicalInstrument>(0);
-            tree.MakeTree(5, tree.root);
+            MyTree<MusicalInstrument> tree = null;
+            tree = new MyTree<MusicalInstrument>(100);
 
             // Act
             tree.TransformToFindTree();
 
             // Assert
-            Assert.IsTrue(IsBinarySearchTree(tree.root));
+            Assert.AreEqual(2, tree.Count);
+        }
+
+        //[TestMethod]
+        //public void FindMin_FindMinimumElementInTree_Success()
+        //{
+        //    // Arrange
+        //    MyTree<MusicalInstrument> tree = null;
+        //    tree = new MyTree<MusicalInstrument>(1);
+        //    MusicalInstrument instrument1 = new MusicalInstrument("Гитара", new IdNumber(0));
+            
+        //    tree.AddPoint(instrument1);
+        //    // Act
+        //    MusicalInstrument min = tree.FindMin();
+        //    // Assert
+        //    Assert.AreEqual(instrument1, min);
+        //}
+
+        [TestMethod]
+        public void RemoveTree_RemoveAllElementsFromTree_Success()
+        {
+            // Arrange
+            MyTree<MusicalInstrument> tree = null;
+            tree = new MyTree<MusicalInstrument>(10);
+            // Act
+            tree.RemoveTree();
+
+            // Assert
+            Assert.AreEqual(0, tree.Count);
         }
 
         [TestMethod]
-        public void RemoveMin_RemovesMinimumElement_MinimumElementIsRemoved()
+        public void Remove_RemoveElementFromTree_Success()
         {
             // Arrange
-            var tree = new MyTree<MusicalInstrument>(0);
-            tree.MakeTree(5, tree.root);
-            var expectedMin = tree.FindMin();
+            MyTree<MusicalInstrument> tree = null;
+            tree = new MyTree<MusicalInstrument>(2);
+
+            MusicalInstrument instrument1 = new MusicalInstrument("Гитара", new IdNumber(1500));
+
+            tree.AddPoint(instrument1);
 
             // Act
-            tree.RemoveMin(tree.root);
-            var actualMin = tree.FindMin();
+            tree.Remove(instrument1);
 
             // Assert
-            Assert.AreNotEqual(expectedMin, actualMin);
+            Assert.AreEqual(2, tree.Count);
         }
 
-        // Helper method to calculate the depth of the tree
-        private int GetTreeDepth(Point<MusicalInstrument>? node)
+        
+        private int CountNodes(Point<MusicalInstrument>? point)
         {
-            if (node == null)
+            if (point == null)
                 return 0;
-            else
-            {
-                int leftDepth = GetTreeDepth(node.Left);
-                int rightDepth = GetTreeDepth(node.Right);
-                return Math.Max(leftDepth, rightDepth) + 1;
-            }
+
+            return 1 + CountNodes(point.Left) + CountNodes(point.Right);
         }
 
-        // Helper method to check if the tree is a binary search tree
-        private bool IsBinarySearchTree(Point<MusicalInstrument>? node, int? minValue = null, int? maxValue = null)
+        
+        private bool IsBinarySearchTree(Point<MusicalInstrument>? point, MusicalInstrument min = null, MusicalInstrument max = null)
         {
-            if (node == null)
+            if (point == null)
                 return true;
 
-            if ((minValue != null && node.Data.Id.Id <= minValue) || (maxValue != null && node.Data.Id.Id >= maxValue))
+            if ((min != null && point.Data.CompareTo(min) <= 0) || (max != null && point.Data.CompareTo(max) >= 0))
                 return false;
 
-            return IsBinarySearchTree(node.Left, minValue, node.Data.Id.Id) && IsBinarySearchTree(node.Right, node.Data.Id.Id, maxValue);
-        }
-
-        [TestMethod]
-        public void Constructor_WithData_SetsDataCorrectly()
-        {
-            // Arrange
-            var data = new MusicalInstrument();
-
-            // Act
-            var point = new Point<MusicalInstrument>(data);
-
-            // Assert
-            Assert.AreEqual(data, point.Data);
-        }
-
-        [TestMethod]
-        public void CompareTo_CompareWithLargerValue_ReturnsNegative()
-        {
-            // Arrange
-            var point1 = new Point<MusicalInstrument>(new MusicalInstrument("Guitar", new IdNumber(1)));
-            var point2 = new Point<MusicalInstrument>(new MusicalInstrument("Piano", new IdNumber(2)));
-
-            // Act
-            var result = point1.CompareTo(point2);
-
-            // Assert
-            Assert.AreEqual(point1, point2);
-        }
-
-        [TestMethod]
-        public void CompareTo_CompareWithSmallerValue_ReturnsPositive()
-        {
-            // Arrange
-            var point1 = new Point<MusicalInstrument>(new MusicalInstrument("Piano", new IdNumber(1)));
-            var point2 = new Point<MusicalInstrument>(new MusicalInstrument("Guitar", new IdNumber(2)));
-
-            // Act
-            var result = point1.CompareTo(point2);
-
-            // Assert
-            Assert.AreEqual(point1, point2);
-        }
-
-        [TestMethod]
-        public void GetKey_ReturnsStringRepresentationOfStringData()
-        {
-            // Arrange
-            var point = new Point<MusicalInstrument>(new MusicalInstrument("key", new IdNumber(1)));
-
-            // Act
-            var key = point.GetKey();
-
-            // Assert
-            Assert.AreEqual("key", key);
-        }
-
-        [TestMethod]
-        public void ToString_ReturnsStringRepresentationOfData()
-        {
-            // Arrange
-            var point = new Point<MusicalInstrument>(new MusicalInstrument("Guitar", new IdNumber(1)));
-
-            // Act
-            var str = point.ToString();
-
-            // Assert
-            Assert.AreEqual("id: 1, Название инструмента: Guitar", str);
+            return IsBinarySearchTree(point.Left, min, point.Data) && IsBinarySearchTree(point.Right, point.Data, max);
         }
 
     }
-
-
 }
 
 

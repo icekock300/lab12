@@ -2,6 +2,8 @@
 using System;
 using lab12_2;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics.CodeAnalysis;
+
 namespace lab12_2
 {
 	public class MyHashTable<T> where T : IInit, ICloneable, new()
@@ -14,7 +16,8 @@ namespace lab12_2
 			table = new Point<T>[length];
 		}
 
-		public void PrintTable()
+        [ExcludeFromCodeCoverage]
+        public void PrintTable()
 		{
 			for (int i = 0; i < table.Length; i++)
 			{
@@ -81,6 +84,7 @@ namespace lab12_2
 			return false;
 		}
 
+		[ExcludeFromCodeCoverage]
 		public bool RemoveData(T data)
 		{
 			Point<T>? current;

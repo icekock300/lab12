@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 namespace lab12_3
 {
     public class Point<T> where T : IComparable
@@ -21,6 +22,7 @@ namespace lab12_3
             this.Right = null;
         }
 
+        [ExcludeFromCodeCoverage]
         public override string? ToString()
         {
             if (Data == null)
@@ -34,10 +36,7 @@ namespace lab12_3
             return Data.CompareTo(other.Data);
         }
 
-        //public string GetKey()
-        //{
-        //    return Data.ToString();
-        //}
+        
     }
 }
 

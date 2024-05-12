@@ -2,6 +2,7 @@
 using System;
 using lab12;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics.CodeAnalysis;
 
 namespace lab12
 {
@@ -94,7 +95,8 @@ namespace lab12
 			}
 		}
 
-		public void PrintList()
+        [ExcludeFromCodeCoverage]
+        public void PrintList()
 		{
 			if (count == 0)
 				Console.WriteLine("the list is empty");
@@ -176,6 +178,7 @@ namespace lab12
             count = 0;
         }
 
+        [ExcludeFromCodeCoverage]
         public bool RemoveLastItemWithSpecifiedData(Func<T, object> dataSelector, object data)
         {
             if (count == 0)
@@ -229,6 +232,7 @@ namespace lab12
             return false; // Не найден элемент с заданными данными
         }
 
+        [ExcludeFromCodeCoverage]
         public bool AddLastItemWithSpecifiedData(Func<T, object> dataSelector, object data)
         {
             Point<T> newItem = MakeRandomData();

@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using lab12;
 using LibraryLab10;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace MyListTests
 {
@@ -46,6 +48,22 @@ namespace MyListTests
 
             // Assert
             Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(item, list.FindItem(item).Data);
+        }
+
+        [TestMethod]
+        public void AddToBeginTest_2()
+        {
+            // Arrange
+            MyList<MusicalInstrument> list = new MyList<MusicalInstrument>();
+            list = new MyList<MusicalInstrument>(5);
+            MusicalInstrument item = new MusicalInstrument("Guitar", new IdNumber(1));
+
+            // Act
+            list.AddToBegin(item);
+
+            // Assert
+            Assert.AreEqual(6, list.Count);
             Assert.AreEqual(item, list.FindItem(item).Data);
         }
 
@@ -97,7 +115,32 @@ namespace MyListTests
             Assert.IsNull(list.FindItem(item));
         }
 
-        
+        [TestMethod]
+        public void RemoveItemTest_2()
+        {
+            // Arrange
+            MyList<MusicalInstrument> list = new MyList<MusicalInstrument>();
+            list = new MyList<MusicalInstrument>(5);
+            MusicalInstrument item = new MusicalInstrument("Guitar", new IdNumber(4));
+            list.AddToEnd(item);
+
+            // Act
+            var removed = list.RemoveItem(item);
+
+            // Assert
+            Assert.IsTrue(removed);
+            Assert.AreEqual(5, list.Count);
+            Assert.IsNull(list.FindItem(item));
+        }
+
+        [TestMethod]
+        public void CloneTest()
+        {
+            MyList<MusicalInstrument> list = new MyList<MusicalInstrument>();
+            list = new MyList<MusicalInstrument>(5);
+            MyList<MusicalInstrument> clonedList = list.Clone();
+            Assert.AreEqual(list.Count, clonedList.Count);
+        }
 
         [TestMethod]
         public void ClearTest()

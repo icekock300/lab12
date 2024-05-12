@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using lab12_2;
 using LibraryLab10;
+using System.Drawing;
 
 namespace MyHashTableTests
 {
@@ -56,6 +57,16 @@ namespace MyHashTableTests
 
             // Assert
             Assert.AreEqual(expectedHashCode, point.GetHashCode());
+        }
+
+        [TestMethod]
+        public void TestCapacity_DefaultConstructor_DefaultCapacity()
+        {
+            // Arrange
+            MyHashTable<MusicalInstrument> hashTable = new MyHashTable<MusicalInstrument>();
+
+            // Assert
+            Assert.AreEqual(10, hashTable.Capacity);
         }
 
         [TestMethod]
@@ -121,6 +132,24 @@ namespace MyHashTableTests
         }
 
         [TestMethod]
+        public void TestRemoveData_RemovesElement()
+        {
+            // Arrange
+            MyHashTable<MusicalInstrument> hashTable = new MyHashTable<MusicalInstrument>();
+            var item1 = new MusicalInstrument("Guitar", new IdNumber(3));
+            var item2 = new MusicalInstrument("Piano", new IdNumber(33));
+            hashTable.AddPoint(item1);
+            hashTable.AddPoint(item2);
+
+            // Act
+            bool removed = hashTable.RemoveData(item1);
+
+            // Assert
+            Assert.IsTrue(removed);
+            Assert.IsFalse(hashTable.Contains(item1));
+        }
+
+        [TestMethod]
         public void MyHashTable_RemoveData_RemovesElementFromTable()
         {
             // Arrange
@@ -133,6 +162,29 @@ namespace MyHashTableTests
 
             // Assert
             Assert.IsFalse(table.Contains(testData));
+        }
+
+        [TestMethod]
+        public void MyHashTable_RemoveData_RemovesElementFromTable_2()
+        {
+            // Arrange
+            MyHashTable<MusicalInstrument> table = new MyHashTable<MusicalInstrument>();
+            for (int i = 0; i < 50; i++)
+            {
+                MusicalInstrument musicalForAdd = new MusicalInstrument();
+                musicalForAdd.RandomInit();
+                table.AddPoint(musicalForAdd);
+            }
+            table = new MyHashTable<MusicalInstrument>(50);
+            MusicalInstrument testData = new MusicalInstrument("Saxophone", new IdNumber(4));
+            table.AddPoint(testData);
+
+            // Act
+            table.RemoveData(testData);
+
+            // Assert
+            Assert.IsFalse(table.Contains(testData));
+            Assert.AreEqual(50, table.Capacity);
         }
 
         [TestMethod]
@@ -166,6 +218,49 @@ namespace MyHashTableTests
         }
 
         [TestMethod]
+        public void MyHashTable_RemoveByKey_RemovesElementByKey_2()
+        {
+            // Arrange
+            MyHashTable<MusicalInstrument> table = new MyHashTable<MusicalInstrument>();
+            for (int i = 0; i < 50; i++)
+            {
+                MusicalInstrument musicalForAdd = new MusicalInstrument();
+                musicalForAdd.RandomInit();
+                table.AddPoint(musicalForAdd);
+            }
+            table = new MyHashTable<MusicalInstrument>(50);
+            MusicalInstrument testData1 = new MusicalInstrument("Guitar", new IdNumber(1));
+            MusicalInstrument testData2 = new MusicalInstrument("ElectricGuitar", new IdNumber(2));
+            MusicalInstrument testData3 = new MusicalInstrument("Piano", new IdNumber(12));
+            table.AddPoint(testData1);
+            table.AddPoint(testData2);
+            table.AddPoint(testData3);
+
+            // Act
+            bool result = table.RemoveByKey(testData3);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsFalse(table.Contains(testData3));
+        }
+
+        [TestMethod]
+        public void MyHashTable_RemoveByKey_RemovesElementByKey_3()
+        {
+            // Arrange
+            var table = new MyHashTable<MusicalInstrument>();
+            var testData = new MusicalInstrument("Trumpet", new IdNumber(6));
+            //table.AddPoint(testData);
+
+            // Act
+            var result = table.RemoveByKey(testData);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+
+        [TestMethod]
         public void MyHashTable_ContainsKey_ReturnsTrueIfKeyExists()
         {
             // Arrange
@@ -176,6 +271,21 @@ namespace MyHashTableTests
             // Assert
             Assert.IsTrue(table.ContainsKey(testData));
         }
+
+        //[TestMethod]
+        //[ExpectedException(typeof(Exception), "System.DivideByZeroException")]
+        //public void TestAddData_DuplicateItem_ThrowsException()
+        //{
+        //    // Arrange
+        //    MyHashTable<MusicalInstrument> hashTable = new MyHashTable<MusicalInstrument>(0);
+        //    var testdata = new MusicalInstrument("Guitar", new IdNumber(3));
+
+        //    // Act
+        //    hashTable.Contains(testdata); // пытаемся добавить дубликат
+
+        //    // Assert
+        //    // Ожидаем исключение, так как дубликат элемента не должен быть добавлен
+        //}
 
         [TestMethod]
         public void MyHashTable_ContainsKey_ReturnsFalseIfKeyDoesNotExist()
